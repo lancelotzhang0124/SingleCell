@@ -25,7 +25,7 @@ p1 <- p1 + labs(title = "Group") +
   theme(plot.title = element_text(size = 50))
 ggsave("p1.pdf", p1, width=20, height=20, limitsize = FALSE)
 
-p2 <- DimPlot(Seurat_object, reduction = "tsne", group.by = "orig.ident", 
+p2 <- DimPlot(Seurat_object, reduction = "tsne", group.by = "seurat_clusters", 
               pt.size=0.8, label = TRUE, repel = TRUE, label.size = 10) + 
   theme(axis.text.x = element_text(size = 25),   # x轴的字体大小
         axis.text.y = element_text(size = 25), 
@@ -53,7 +53,7 @@ p3 <- p3 + labs(title = "Group") +
   theme(plot.title = element_text(size = 50))
 ggsave("p3.pdf", p3, width=20, height=20, limitsize = FALSE)
 
-p4 <- DimPlot(Seurat_object, reduction = "umap", group.by = "orig.ident", 
+p4 <- DimPlot(Seurat_object, reduction = "umap", group.by = "seurat_clusters", 
               pt.size=0.8, label = TRUE, repel = TRUE, label.size = 8) + 
   theme(axis.text.x = element_text(size = 30),   # x轴的字体大小
         axis.text.y = element_text(size = 30), 
@@ -86,11 +86,11 @@ all.markers <- FindAllMarkers(Seurat_object, only.pos = TRUE, min.pct = 0.25, lo
 #VlnPlot(Seurat_object, features = c("ur_Gene_name_0", "ur_Gene_name_1"), slot = "counts", log = TRUE)
 
 pdf(file="0.markerViolin01.pdf",width=10,height=6)
-VlnPlot(object = Seurat_object, features = c("ur_Gene_name_0", "AC011288.2"))
+VlnPlot(object = Seurat_object, features = c("ur_Gene_name_0", "ur_Gene_name_1"))
 dev.off()
 
 pdf(file="0.markerScatter.pdf",width=10,height=6)
-FeaturePlot(object = Seurat_object, features = c("ur_Gene_name_0", "AC011288.2"))
+FeaturePlot(object = Seurat_object, features = c("ur_Gene_name_0", "Aur_Gene_name_1"))
 dev.off()
 
 FeaturePlot(Seurat_object, features = c("ur_Gene_name_0"))
