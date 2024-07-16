@@ -16,7 +16,7 @@ table(Seurat_object@meta.data$predicted_labels)
                    "#a1ff59", "#37864d", "#ffeebc", "#ffca15", "#f79d00", 
                    "#d07733", "#ff7832")
 
-#先粗略的看一下做出来的图是否存在明显的批次效应
+# check batch effect
 Idents(Seurat_object) <- Seurat_object$seurat_clusters
 pdf(paste0(res_home, "Figure/Seurat_object_UMAP_seurat_clusters.pdf"),width = 8,height = 6)
 DimPlot(Seurat_object, reduction = 'umap',cols = colorRampPalette(.cluster_cols)(length(table(Seurat_object$seurat_clusters))),label = F,repel = T,label.size = 3,label.box = T) & theme_dr() & theme(panel.grid=element_blank())
@@ -28,7 +28,6 @@ DimPlot(Seurat_object, reduction = 'umap',cols = colorRampPalette(.cluster_cols)
 dev.off()
 
 ###############batch correction###############
-#需要鸿蒙
 library(harmony)
 library(devtools)
 
@@ -39,7 +38,6 @@ harmony_embeddings<- Embeddings(Seurat_object_harmony, "harmony")
 library(tidyverse)
 Seurat_object_harmony <- Seurat_object_harmony %>% RunUMAP(reduction="harmony", dims = 1:20) %>% FindNeighbors(reduction = "harmony", dims = 1:20)
 Seurat_object <- FindClusters(Seurat_object_harmony, resolution = seq(0.2, 0.5, by=0.1), algorithm = 1)
-#这一步已经替换了原来的Seurat_object里的0.2~0.5分辨率的cluster
 colnames(Seurat_object@meta.data)
 
 saveRDS(Seurat_object_harmony, file = 'Seurat_object_harmony.rds')
