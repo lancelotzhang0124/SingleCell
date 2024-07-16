@@ -1,4 +1,4 @@
-#我尝试用R来执行python
+#To excute Python scripts in your R environment, please use package 'reticulate'
 library('Matrix')
 library('reticulate')
 library('dplyr')
