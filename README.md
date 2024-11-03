@@ -14,10 +14,6 @@ Welcome to the **SingleCell RNA-seq Pipeline** repository. This pipeline is desi
 - **Seurat**: Version 4.4.0
 - Additional R and Python packages will be automatically installed as dependencies during setup.
 
-## Getting Started
-
-To get started with this pipeline, please ensure your environment meets the above requirements. Detailed instructions for setting up and running the pipeline are provided in the [Installation Guide](#) and [Usage Instructions](#).
-
 ## Contact
 
 For questions or support, feel free to reach out via email: [zlfwhu@outlook.com](mailto:zlfwhu@outlook.com).
