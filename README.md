@@ -12,6 +12,7 @@ Welcome to the **SingleCell RNA-seq Pipeline** repository. This pipeline is desi
 ## Key Packages
 
 - **Seurat**: Version 4.4.0
+- **[geneNMF](https://github.com/carmonalab/GeneNMF)**: Version 0.6.0
 - Additional R and Python packages will be automatically installed as dependencies during setup.
 
 ## Contact
