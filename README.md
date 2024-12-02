@@ -22,7 +22,3 @@ Welcome to the **SingleCell RNA-seq Pipeline** repository. This pipeline is desi
 ## Contact
 
 For questions or support, feel free to reach out via email: [zhanglingfeng@whu.edu.cn](mailto:zhanglingfeng@whu.edu.cn).
-
----
-
-Feel free to contribute or suggest improvements to this pipeline. We are committed to improving the usability and functionality of scRNA-seq analysis tools!
