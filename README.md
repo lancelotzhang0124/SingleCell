@@ -1,6 +1,6 @@
-# SingleCell RNA-seq Pipeline
+# scRNA-seq Pipeline
 
-Welcome to the **SingleCell RNA-seq Pipeline** repository. This pipeline is designed for processing and analyzing single-cell RNA sequencing (scRNA-seq) data efficiently and effectively.
+Welcome to the **scRNA-seq Pipeline** repository. This pipeline is designed for processing and analyzing single-cell RNA sequencing (scRNA-seq) data efficiently and effectively.
 
 ## Environment Requirements
 
