@@ -5,7 +5,7 @@ Welcome to the **SingleCell RNA-seq Pipeline** repository. This pipeline is desi
 ## Environment Requirements
 
 - **Platform**: R Studio Server / Visual Studio Code
-- **R Version**: [4.3.3](https://cran.rstudio.com/bin/windows/base/old/4.3.3/)
+- **R Version**: [4.3.1](https://cran.rstudio.com/bin/windows/base/old/4.3.3/)
 - **Bioconductor Version**: [3.17](https://bioconductor.org/news/bioc_3_17_release/)
 - **Python Version**: [3.11](https://www.python.org/downloads/release/python-3110/)
 
