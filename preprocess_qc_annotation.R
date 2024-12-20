@@ -51,22 +51,19 @@ fixed_feature_names <- gsub("_", "-", feature.names)
 rownames(mat) = fixed_feature_names
 Seurat_object <- CreateSeuratObject(counts = mat)
 ####################quality control######################
-Seurat_object[["percent.mt"]] <- PercentageFeatureSet(Seurat_object, pattern = "^MT")
 Seurat_object[["percent.hb"]] <- PercentageFeatureSet(Seurat_object, pattern = "^HB")
-rownames(Seurat_object)[grepl('^MT',rownames(Seurat_object))]
 rb.genes <- rownames(Seurat_object)[grepl('^RP',rownames(Seurat_object))]
 C<-GetAssayData(object = Seurat_object, slot = "counts")
 percent.ribo <- Matrix::colSums(C[rb.genes,])/Matrix::colSums(C)*100
 Seurat_object <- AddMetaData(Seurat_object, percent.ribo, col.name = "percent.ribo")
-p.rb_mt <- VlnPlot(Seurat_object, features = c("percent.ribo", "percent.mt"), pt.size = 0,log = TRUE, ncol = 2, raster = F)
-ggsave(filename = "rb_mt.png", path = paste0(res_home, "Figure/"), plot = p.rb_mt,  dpi = 400, width = 15, height = 10, limitsize = F)
+p.rb <- VlnPlot(Seurat_object, features = c("percent.ribo"), pt.size = 0,log = TRUE, ncol = 2, raster = F)
+ggsave(filename = "rb.png", path = paste0(res_home, "Figure/"), plot = p.rb,  dpi = 400, width = 15, height = 10, limitsize = F)
 rm(C)
 Seurat_object <- subset(Seurat_object, (subset = nCount_RNA > 350 & 
                           nCount_RNA < 25000 &
                           nFeature_RNA < 5000 &
                           percent.ribo < 30 &
-                          percent.mt < 5 & #筛的线粒体，原文这一步是5%
-                          nFeature_RNA > 200))#| MainType == "Micro")
+                          nFeature_RNA > 200))
 ####################group info######################
 #chemistry batch
 group_values <- ifelse(str_detect(colnames(Seurat_object), "F18|F19|F20|F27|F28|F9|M1|M10|M11|M14|M17|M18|M23|M26|M28|M30|M32|M33|M34|M4|M5|M6|M8|F23|F24|F26|F29|F32|M12|M13|M15|M16|M19|M2|M20|M21|M22|M24|M24_2|M27|M29|M3|M31|M7|M9"
@@ -168,7 +165,7 @@ meta_data <- Seurat_object@meta.data
 library('Matrix')
 library('reticulate')
 library('Seurat')
-#use_condaenv(condaenv = "py3.11", required = TRUE) # my conda env
+#use_condaenv(condaenv = "py3.11", required = TRUE)
 use_python("/home/lfzhang/miniconda3/envs/py3.11/bin/python")
 py_config()
 numpy = import("numpy")
@@ -178,7 +175,7 @@ mpl$use("Agg")
 scanpy = import("scanpy")
 celltypist = import("celltypist")
 #celltypist$models$download_models(force_update = T)
-model <- celltypist$models$Model$load(model = '/home/lfzhang/.celltypist/data/models/Human_AdultAged_Hippocampus.pkl')
+model <- celltypist$models$Model$load(model = '/home/lfzhang/.celltypist/data/models/Adult_Human_PrefrontalCortex.pkl')
 print(model)
 adata = scanpy$AnnData(X = numpy$array(as.matrix(t(counts_matrix))),
                        obs = pandas$DataFrame(meta_data),
@@ -198,7 +195,7 @@ import celltypist
 adata_copy = sc.AnnData(X=adata.X.copy(), obs=adata.obs, var=adata.var)
 sc.pp.normalize_total(adata_copy, target_sum=1e4)
 sc.pp.log1p(adata_copy)
-predictions = celltypist.annotate(adata_copy, model = 'Human_AdultAged_Hippocampus.pkl', majority_voting = True)
+predictions = celltypist.annotate(adata_copy, model = 'Adult_Human_PrefrontalCortex.pkl', majority_voting = True)
 ")
 predictions <- py$predictions
 Seurat_object <- readRDS("~/SingleCell/Seurat_object.rds")
@@ -240,7 +237,7 @@ homotypic.prop <- modelHomotypic(annotations)
 DoubletRate = 0.075 # ~
 
 # estimate the proportion of homotypic doublets by artificially mixing doublets from seurat_clusters according to the parameters in modelHomotypic().
-nExp_poi <- round(DoubletRate*length(Seurat_object$MainType))  #最好提供celltype，而不是seurat_clusters。
+nExp_poi <- round(DoubletRate*length(Seurat_object$MainType)) 
 # calculate doublet rate
 nExp_poi.adj <- round(nExp_poi*(1-homotypic.prop))
 
@@ -341,26 +338,12 @@ singlet <- RunTSNE(singlet, dims = 1:80)
 Seurat_object <- singlet
 
 #############annotation################
-OLG <- c("PLP1","MBP","CNP", "MAG", "MOG", "MOBP")
-ASC <- c("ALDH1L1", "ALDH1A1", "GFAP", "GLUL", "GJA1", "SOX9", "AQP4", "NDRG2")
-NEURON <- c("SNAP25", "RBFOX3")
-ENDO <- c("APOLD1","TM4SF1","A2M","FLT1","PLVAP","PECAM1","VWF","CLDN5", "VTN", "VIM")
-OPC <- c("PCDH15","OLIG1","OLIG2","PDGFRA")
-IMMU <- c("CCL2","CD14","BCL2A1","SPI1", "MRC1", "TMEM119", "CX3CR1")
-EPD <- c("PIFO","FOXJ1","S100B")
-Ex <- c("SATB2", "SLC17A7", "SLC17A6")
-Inhib <- c("GAD1", "GAD2", "SLC32A1")
-
-res_home <- "/home/lfzhang/SingleCell/"
-
 OLG <- c("SLC44A1","PLP1","MBP", "MOG", "MOBP")
 ASC <- c("SLC1A2","ALDH1L1", "ALDH1A1", "GFAP", "GLUL", "GJA1", "SOX9", "AQP4", "NDRG2")
 NEURON <- c("SNAP25", "RBFOX3")
-#ENDO <- c("APOLD1","TM4SF1","A2M","FLT1","PLVAP","PECAM1","VWF","CLDN5", "VTN", "VIM")
 EPD <- c("CLDN5", "VIM")
 OPC <- c("PTPRZ1","PCDH15","OLIG1","OLIG2","PDGFRA")
 MicroM <- c("PTPRC","CSF1R","APBB1IP","P2RY12","CX3CR1","ITGAM")
-#EPD <- c("PIFO","FOXJ1","S100B")
 Ex_1 <- c("SATB2", "SLC17A7")
 Inhib <- c("GAD1", "GAD2")
 sub_inhib <- c("VIP", "PVALB", "SST", "ADARB2", "LHX6", "LAMP5", "PAX6")
