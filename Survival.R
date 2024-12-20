@@ -10,6 +10,28 @@ res_home <- "/home/lfZhang/sc/Figure/"
 
 # Load dataset and select specific proteins
 df <- read.csv(file = 'Cox.csv', sep = ",")
+# 33 features with non-zero coefficients were selected.
+specific_proteins <- c("ATP1B1", "CLU", "CNTN5", "CRHBP", "CXCL14", "DCC", "DPP10", "ERBB4", "GAPDH", "GPC5", "IDS", "KIT", "NCAM2", "NEFL", "NPTXR", "NRGN", "NXPH1", "PCDH7", "PDE5A", "PEBP1", "PILRB", "PKD1", "PRKG1", "PVALB", "ROBO2", "SAT2", "SLIT2", "SNAP25", "SPARCL1", "THY1", "TMSB10", "TSPYL1", "VSNL1")
+
+trainData[sapply(trainData, is.character)] <- lapply(trainData[sapply(trainData, is.character)], as.factor)
+testData[sapply(testData, is.character)] <- lapply(testData[sapply(testData, is.character)], as.factor)
+
+formula_str_basic <- "Surv(follow_Duration, MDD==1) ~ Age + Sex_cate + family_history + Townsend_index_cate + Qualifications_cate + Smoking_status_cate + Alcohol_status_cate + BMI_cate + IPAQ_cate + chronic_num + Drug +"
+formula_str <- paste(formula_str_basic, paste(specific_proteins, collapse = " + "))
+cox_formula <- as.formula(formula_str)
+
+x_train <- model.matrix(cox_formula, data = trainData)[, -1]  
+x_test <- model.matrix(cox_formula, data = testData)[, -1]
+
+coxboost_fit <- CoxBoost(
+  time = trainData$follow_Duration,
+  status = trainData$MDD == 1,
+  x = x_train,
+  stepno = 500
+)
+summary(coxboost_fit)
+
+# Five features with non-zero coefficients were selected.
 specific_proteins <- c("NEFL", "PKD1", "TMSB10", "CNTN5", "NCAM2")
 df_subset <- df[, c("MDD", specific_proteins)]
 
